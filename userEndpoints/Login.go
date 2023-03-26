@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	types "user-management/models"
+
+	"github.com/chandanaavadhani/usermanagement/models"
+	"github.com/chandanaavadhani/usermanagement/userDB"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -16,13 +18,18 @@ func LoginRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//Get the Data
-	var loginData types.User
+	var loginData models.User
 	err := json.NewDecoder(r.Body).Decode(&loginData)
 	if err != nil {
 		http.Error(w, "Login Decoding Error", http.StatusInternalServerError)
 		return
 	}
-	fmt.Printf(loginData.Username)
+	db, err := userDB.Dbconnection()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
 	//Validate the Data
 	query, err := db.Query(`select count(*), PWord from users.users where UserName = ? Group By UserName`, loginData.Username)
 	if err != nil {

@@ -2,6 +2,7 @@ package userDB
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -11,12 +12,11 @@ import (
 const dbName = "mysql"
 const dbUrl = "root:Chandu@9@tcp(localhost:3306)/users"
 
-func Dbconnection() {
+func Dbconnection() (*sql.DB, error) {
 	db, err := sql.Open(dbName, dbUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
-
+	fmt.Println("Connected!")
 	return db, nil
 }

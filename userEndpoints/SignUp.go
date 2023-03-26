@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	types "user-management/models"
+
+	"github.com/chandanaavadhani/usermanagement/models"
+	"github.com/chandanaavadhani/usermanagement/userDB"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -16,7 +18,7 @@ func SignUpRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//Get the Data
-	var user types.User
+	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		http.Error(w, "Decoding Error", http.StatusInternalServerError)
@@ -44,6 +46,11 @@ func SignUpRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Passwords don't match", http.StatusBadRequest)
 		return
 	}
+	db, err := userDB.Dbconnection()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
 	//Execute the query
 	query, err := db.Prepare(`INSERT INTO users VALUES(?,?,?,?,?)`)
 	if err != nil {

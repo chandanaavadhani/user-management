@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/chandanaavadhani/usermanagement/userDB"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -14,6 +15,12 @@ func DeleteRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
+	db, err := userDB.Dbconnection()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
 	//Get the Query Params
 	username := r.URL.Query().Get("username")
 	query, err := db.Query(`select count(*), UserName from users.users where UserName = ? Group By UserName`, username)

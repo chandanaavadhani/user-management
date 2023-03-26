@@ -3,25 +3,34 @@ package userEndpoints
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
-	types "user-management/models"
 
+	"github.com/chandanaavadhani/usermanagement/models"
+	"github.com/chandanaavadhani/usermanagement/userDB"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 // Update the Password
 func UpdateRequest(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "PUT" {
+		fmt.Println(r.Method)
 		http.Error(w, "Method not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
 	//Get the Data
-	var updateUser types.User
+	var updateUser models.User
 	err := json.NewDecoder(r.Body).Decode(&updateUser)
 	if err != nil {
 		http.Error(w, "Updating Error", http.StatusInternalServerError)
 		return
 	}
+	db, err := userDB.Dbconnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
 	//Validate the Data
 	query, err := db.Query(`select count(*), PWord from users.users where UserName = ? Group By UserName`, updateUser.Username)
 	if err != nil {

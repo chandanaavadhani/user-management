@@ -1,4 +1,4 @@
-module user-management
+module github.com/chandanaavadhani/usermanagement
 
 go 1.20
 
