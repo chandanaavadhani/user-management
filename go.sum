@@ -1,2 +1,4 @@
+github.com/chandanaavadhani/usermanagement v1.0.0 h1:vBZu2zjCXlRw/IfON3ES1mjqYXpBqLKy1s9sx3r78mU=
+github.com/chandanaavadhani/usermanagement v1.0.0/go.mod h1:kDu4SDJC/7R95h9UF9khX1VeUXm7JYPAQg4X+CKwbyk=
 github.com/go-sql-driver/mysql v1.7.0 h1:ueSltNNllEqE3qcWBTD0iQd3IpL/6U+mJxLkazJ7YPc=
 github.com/go-sql-driver/mysql v1.7.0/go.mod h1:OXbVy3sEdcQ2Doequ6Z5BW6fXNQTmx+9S1MCJN5yJMI=
