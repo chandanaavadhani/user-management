@@ -3,11 +3,11 @@ package userEndpoints
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/chandanaavadhani/usermanagement/models"
 	"github.com/chandanaavadhani/usermanagement/userDB"
+	"github.com/chandanaavadhani/usermanagement/userValidations"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -25,46 +25,14 @@ func UpdateRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Updating Error", http.StatusInternalServerError)
 		return
 	}
-	db, err := userDB.Dbconnection()
+	//Validate the data
+	StatusCode, err := userValidations.UpdateValidation(updateUser)
 	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
-	//Validate the Data
-	query, err := db.Query(`select count(*), PWord from users.users where UserName = ? Group By UserName`, updateUser.Username)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	var count int
-	var passw string
-	for query.Next() {
-		if err := query.Scan(&count, &passw); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	}
-	if count == 0 {
-		http.Error(w, "Username Not Found", http.StatusBadRequest)
-		return
-	}
-	if passw != updateUser.OldPassword {
-		http.Error(w, "Incorrect old Password", http.StatusBadRequest)
-		fmt.Println(updateUser.OldPassword, updateUser.PWord)
-		return
-	}
-	//fmt.Println(updateUser.OldPassword, updateUser.PWord)
-	if len(updateUser.NewPassword) < 8 {
-		http.Error(w, "Password is Not Valid", http.StatusBadRequest)
-		return
-	}
-	if updateUser.ConfirmPassword != updateUser.NewPassword {
-		http.Error(w, "Passwords don't match", http.StatusBadRequest)
+		http.Error(w, err.Error(), StatusCode)
 		return
 	}
 	//Update the Data
-	_, err = db.Query(`Update users.users set PWord = ? where UserName = ? `, updateUser.NewPassword, updateUser.Username)
+	userDB.Updatepassword(updateUser)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

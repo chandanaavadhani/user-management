@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/chandanaavadhani/usermanagement/models"
-	"github.com/chandanaavadhani/usermanagement/userDB"
+	"github.com/chandanaavadhani/usermanagement/userValidations"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -24,32 +24,11 @@ func LoginRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Login Decoding Error", http.StatusInternalServerError)
 		return
 	}
-	db, err := userDB.Dbconnection()
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
 
 	//Validate the Data
-	query, err := db.Query(`select count(*), PWord from users.users where UserName = ? Group By UserName`, loginData.Username)
+	StatusCode, err := userValidations.LoginValidation(loginData)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	var count int
-	var passw string
-	for query.Next() {
-		if err := query.Scan(&count, &passw); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	}
-	if count == 0 {
-		http.Error(w, "Username Not Found", http.StatusBadRequest)
-		return
-	}
-	if loginData.PWord != passw {
-		http.Error(w, "Incorrect Password", http.StatusBadRequest)
+		http.Error(w, err.Error(), StatusCode)
 		return
 	}
 	fmt.Fprintf(w, "Login Successful")

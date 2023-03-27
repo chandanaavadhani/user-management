@@ -18,5 +18,6 @@ func Dbconnection() (*sql.DB, error) {
 		log.Fatal(err)
 	}
 	fmt.Println("Connected!")
+	// defer db.Close()
 	return db, nil
 }
