@@ -13,10 +13,13 @@ import (
 
 // Login with UserName and Password
 func LoginRequest(w http.ResponseWriter, r *http.Request) {
+
+	//Validate the Method
 	if r.Method != "POST" {
 		http.Error(w, "Method not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
+
 	//Get the Data
 	var loginData models.User
 	err := json.NewDecoder(r.Body).Decode(&loginData)

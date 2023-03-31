@@ -16,6 +16,7 @@ func Dbconnection() (*sql.DB, error) {
 	db, err := sql.Open(dbName, dbUrl)
 	if err != nil {
 		log.Fatal(err)
+		return db, err
 	}
 	fmt.Println("Connected!")
 	// defer db.Close()

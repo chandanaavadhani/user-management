@@ -10,3 +10,8 @@ type User struct {
 	NewPassword     string `json:"newpassword"`
 	ConfirmPassword string `json:"confirmpassword"`
 }
+
+type Message struct {
+	Status string `json:"status"`
+	Info   string `json:"info"`
+}

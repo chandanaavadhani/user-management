@@ -11,6 +11,7 @@ import (
 
 func main() {
 
+	http.HandleFunc("/home", jwt.verifyJWT(userEndpoints.handlePage))
 	http.HandleFunc("/SignUp", userEndpoints.SignUpRequest)
 	http.HandleFunc("/Login", userEndpoints.LoginRequest)
 	http.HandleFunc("/Update", userEndpoints.UpdateRequest)
@@ -18,6 +19,6 @@ func main() {
 	log.Printf("Starting the server at the port 9999")
 	err := http.ListenAndServe(":9999", nil)
 	if err != nil {
-		fmt.Println("Error Occured", err)
+		fmt.Println("There was an error listening on port :9999", err)
 	}
 }

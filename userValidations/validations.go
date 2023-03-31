@@ -74,7 +74,7 @@ func UpdateValidation(user models.User) (int, error) {
 }
 
 func DeleteUsername(user string) (int, error) {
-	count, _, err := userDB.StringValidations(user)
+	count, _, err := userDB.DeleteuserValidations(user)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}

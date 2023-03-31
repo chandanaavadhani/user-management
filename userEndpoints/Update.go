@@ -13,11 +13,14 @@ import (
 
 // Update the Password
 func UpdateRequest(w http.ResponseWriter, r *http.Request) {
+
+	//Validate the Method
 	if r.Method != "PUT" {
 		fmt.Println(r.Method)
 		http.Error(w, "Method not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
+
 	//Get the Data
 	var updateUser models.User
 	err := json.NewDecoder(r.Body).Decode(&updateUser)
@@ -25,14 +28,16 @@ func UpdateRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Updating Error", http.StatusInternalServerError)
 		return
 	}
+
 	//Validate the data
 	StatusCode, err := userValidations.UpdateValidation(updateUser)
 	if err != nil {
 		http.Error(w, err.Error(), StatusCode)
 		return
 	}
+
 	//Update the Data
-	userDB.Updatepassword(updateUser)
+	err = userDB.Updatepassword(updateUser)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

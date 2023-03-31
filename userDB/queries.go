@@ -20,9 +20,6 @@ func Insertdetails(user models.User) error {
 	defer query.Close()
 
 	_, err = query.Exec(user.Fullname, user.Contactno, user.Email, user.Username, user.PWord)
-	if err != nil {
-		return err
-	}
 	return err
 }
 
@@ -34,9 +31,6 @@ func Updatepassword(user models.User) error {
 	defer db.Close()
 
 	_, err = db.Query(`Update users.users set PWord = ? where UserName = ? `, user.NewPassword, user.Username)
-	if err != nil {
-		return err
-	}
 	return err
 }
 
@@ -47,11 +41,7 @@ func Deleteuser(username string) error {
 	}
 	defer db.Close()
 
-	query, err := db.Query(`DELETE FROM users.users where UserName = ?`, username)
-	if err != nil {
-		return err
-	}
-	defer query.Close()
+	_, err = db.Query(`DELETE FROM users.users where UserName = ?`, username)
 	return err
 }
 
@@ -78,7 +68,7 @@ func Validationsquery(user models.User) (int, string, error) {
 	return count, password, nil
 }
 
-func StringValidations(user string) (int, string, error) {
+func DeleteuserValidations(user string) (int, string, error) {
 
 	var count int
 	var password string

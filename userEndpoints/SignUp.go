@@ -13,6 +13,8 @@ import (
 
 // SignUp Request
 func SignUpRequest(w http.ResponseWriter, r *http.Request) {
+
+	//Validate the Method
 	if r.Method != "POST" {
 		http.Error(w, "Method not Allowed", http.StatusMethodNotAllowed)
 		return
@@ -34,7 +36,11 @@ func SignUpRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Insert the details
-	userDB.Insertdetails(user)
+	err = userDB.Insertdetails(user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	fmt.Fprintf(w, "Successfully Created new user: %s", user.Username)
 	w.WriteHeader(http.StatusCreated)
 }
